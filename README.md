@@ -2,7 +2,7 @@
 Personal PowerShell Script collection
 
 ## Content:
-* **StorageReplica/New-StrechedFileCluster.ps1:**  
+* **StorageReplica/New-StretchedFileCluster.ps1:**  
 Simple Script to build a virtual two node, stretched, general purpose file server cluster with storage replica
 
 * **Request-Certificate.ps1**  

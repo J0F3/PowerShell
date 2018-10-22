@@ -1,14 +1,14 @@
 <#
 .SYNOPSIS
-    Builds a virutal two node, streched, general purpose file server cluster with storage replica
+    Builds a virtual two node, stretched, general purpose file server cluster with storage replica
 .DESCRIPTION
-    Script with all steps to build a streched cluster, based on two VMs, with a general purpose file server cluster role.
-    The underneath storage is not shared storage but local storage. The volume insiede the VMs will then replicated with Storage Replica
+    Script with all steps to build a stretched cluster, based on two VMs, with a general purpose file server cluster role.
+    The underneath storage is not shared storage but local storage. The volume inside the VMs will then replicated with Storage Replica
 
-    The sicript is intended to run on a third computer like a managemnt server where the Failover Cluster, Hyper-V and Storage Replica RSAT tools are installed.
+    The script is intended to run on a third computer like a management server where the Failover Cluster, Hyper-V and Storage Replica RSAT tools are installed.
 
 .PARAMETER Server
-    Computer names of the thwo cluster nodes
+    Computer names of the two cluster nodes
 
 .PARAMETER Locations
     Name of the two sites. Will be used to name the sites in cluster fault domains configuration
@@ -26,7 +26,7 @@
     Primary access Key of the Azure storage account which should be used as cloud witness (empty if cloud witness should not be configure)
 
 .PARAMETER WitnessShare
-    Full UNC path to the sahre which sould be used as witness file share (only if cloud witness can/sould not be used)
+    Full UNC path to the share which should be used as witness file share (only if cloud witness can/should not be used)
 
 .PARAMETER HyperVHosts
     Name of the Hyper-V hosts on which the two VMs are currently running (to attach the need VHDX to the VMs)
@@ -56,7 +56,7 @@
     IP Address of the File Server Cluster Role
 
 .PARAMETER ShareNames
-    An Arry with Hashtable(s) with file share which sould be created on the Data volume. (One Hashtable per File Share)
+    An Array with Hashtable(s) with file share which should be created on the Data volume. (One Hashtable per File Share)
     The Hashtable must contains to keys "Sharename" and "ContinuouslyAvailable"
     Example: @{ShareName = "TestShare";ContinuouslyAvailable=$true}
 
