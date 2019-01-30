@@ -204,6 +204,7 @@ KeyLength = 2048
 KeySpec=1
 Exportable = TRUE
 RequestType = PKCS10
+ProviderName = "Microsoft Enhanced Cryptographic Provider v1.0"
 [RequestAttributes]
 CertificateTemplate = "$TemplateName"
 "@
