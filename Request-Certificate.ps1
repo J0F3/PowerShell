@@ -128,7 +128,7 @@ test3.test.ch;DNS=test3san1.test.ch,DNS=test3san2.test.ch
 		   
 .NOTES
 
-Version    : 1.4, 01/31/2018
+Version    : 1.4, 01/31/2019
 Changes    : 
 	Thanks to David Allsopp c/o dra27 on GitHub
 	- Better default for CAName so it is not needed when only one CA is available. 
