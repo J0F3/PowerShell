@@ -32,7 +32,8 @@ The default value is "WebServer".
 
 .PARAMETER CAName
 Specifies the name of the CA to send the request to in the format FQDN\CAName
-If the CAName is not specified the user becomes a prompt to choose a enterprise CA from the local Active Directory.
+If the CAName is not specified, then the directory is queried for a list of enterprise CAs.
+If more than one is returned the user is prompted to choose an enterprise CA from the local Active Directory.
 
 .PARAMETER Export
 Exports the certificate and private key to a pfx file instead of installing it in the local computer store.
@@ -264,13 +265,25 @@ CertificateTemplate = "$TemplateName"
         write-verbose "Sending certificate request to CA"
         Write-Debug "CAName = $CAName"
             
-        if ($PSBoundParameters.ContainsKey('CAName')) {
-            Write-Debug "certreq -submit -config `"$CAName`" `"$req`" `"$cer`""
-            Invoke-Expression -Command "certreq -submit -config `"$CAName`" `"$req`" `"$cer`""
+        if (!$PSBoundParameters.ContainsKey('CAName')) {
+            $rootDSE = [System.DirectoryServices.DirectoryEntry]'LDAP://RootDSE'
+            $searchBase = [System.DirectoryServices.DirectoryEntry]"LDAP://$($rootDSE.configurationNamingContext)"
+            $CAs = [System.DirectoryServices.DirectorySearcher]::new($searchBase,'objectClass=pKIEnrollmentService').FindAll()
+
+            if($CAs.Count -eq 1){
+                $CAName = "$($CAs[0].Properties.dnshostname)\$($CAs[0].Properties.cn)"
+            }
+            else {
+                $CAName = ""
+            }
         }
-        else {
-            Invoke-Expression -Command "certreq -submit `"$req`" `"$cer`""
+
+        if (!$CAName -eq "") {
+            $CAName = " -config `"$CAName`""
         }
+
+        Write-Debug "certreq -submit$CAName `"$req`" `"$cer`""
+        Invoke-Expression -Command "certreq -submit$CAName `"$req`" `"$cer`""
 
         if (!($LastExitCode -eq 0)) {
             throw "certreq -submit command failed"
