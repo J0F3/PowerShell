@@ -270,7 +270,7 @@ CertificateTemplate = "$TemplateName"
             $CAs = [System.DirectoryServices.DirectorySearcher]::new($searchBase,'objectClass=pKIEnrollmentService').FindAll()
 
             if($CAs.Count -eq 1){
-                $CAName = "$($CAs[0].Properties.dnshostname))\$($CAs[0].Properties.cn)"
+                $CAName = "$($CAs[0].Properties.dnshostname)\$($CAs[0].Properties.cn)"
             }
             else {
                 $CAName = ""
