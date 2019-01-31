@@ -32,7 +32,7 @@ The default value is "WebServer".
 
 .PARAMETER CAName
 Specifies the name of the CA to send the request to in the format FQDN\CAName
-If the CAName is not specified, then certutil -dump is used to retrieve a list of enterprise CAs.
+If the CAName is not specified, then the directory is queried for a list of enterprise CAs.
 If more than one is returned the user is prompted to choose an enterprise CA from the local Active Directory.
 
 .PARAMETER Export
@@ -265,9 +265,12 @@ CertificateTemplate = "$TemplateName"
         Write-Debug "CAName = $CAName"
             
         if (!$PSBoundParameters.ContainsKey('CAName')) {
-            $CAs = certutil -dump | Select-String 'Config:'
-            if (($CAs.Length -eq 1) -and ($CAs[0] -match '.*`(.*)''')) {
-                $CAName = $matches[1]
+            $rootDSE = [System.DirectoryServices.DirectoryEntry]'LDAP://RootDSE'
+            $searchBase = [System.DirectoryServices.DirectoryEntry]"LDAP://$($rootDSE.configurationNamingContext)"
+            $CAs = [System.DirectoryServices.DirectorySearcher]::new($searchBase,'objectClass=pKIEnrollmentService').FindAll()
+
+            if($CAs.Count -eq 1){
+                $CAName = "$($CAs[0].Properties.dnshostname))\$($CAs[0].Properties.cn)"
             }
             else {
                 $CAName = ""
