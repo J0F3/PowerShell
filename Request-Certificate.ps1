@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS 
 Requests a certificate from a Windows CA
 
@@ -127,13 +127,24 @@ test2.test.ch;DNS=test2san1.test.ch,DNS=test2san2.test.ch
 test3.test.ch;DNS=test3san1.test.ch,DNS=test3san2.test.ch
 		   
 .NOTES
+
+Version    : 1.4, 01/31/2018
+Changes    : 
+	Thanks to David Allsopp c/o dra27 on GitHub
+	- Better default for CAName so it is not needed when only one CA is available. 
+	- ProviderName specified in the request inf file
+	
 Version    : 1.3, 10/20/2018
-Changes    : Improvements in temp file handling, Additional parameter to specify the export path for pfx file, Requesting SAN certs with Extensions instead of Attributes
+Changes    :
+	- Improvements in temp file handling
+	- Additional parameter to specify the export path for pfx file
+	- Requesting SAN certs with Extensions instead of Attributes
+
 File Name  : Request-Certificate.ps1
 Requires   : PowerShell V2 or higher
 
 .LINK
-© Jonas Feller c/o J0F3, May 2011 / October 2018
+© Jonas Feller c/o J0F3, 2019
 www.jfe.cloud
 
 #>
