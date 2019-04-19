@@ -158,6 +158,9 @@ Param(
     [Parameter(Mandatory = $False, ValueFromPipelineByPropertyName = $True)]
     [String]$TemplateName = "WebServer",
     [Parameter(Mandatory = $False, ValueFromPipelineByPropertyName = $True)]
+    [ValidateSet(1024,2048,3072,4096,15360)]
+    [int]$keyLength = 2048,
+    [Parameter(Mandatory = $False, ValueFromPipelineByPropertyName = $True)]
     [string]$CAName,
     [Parameter(Mandatory = $False, ValueFromPipelineByPropertyName = $True)]
     [switch]$Export,
@@ -212,7 +215,7 @@ PROCESS {
 [NewRequest]
 Subject = "CN=$CN,c=$Country, s=$State, l=$City, o=$Organisation, ou=$Department"
 MachineKeySet = TRUE
-KeyLength = 2048
+KeyLength = $KeyLength
 KeySpec=1
 Exportable = TRUE
 RequestType = PKCS10
