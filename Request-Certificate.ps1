@@ -30,6 +30,11 @@ e.g. dns=test.jofe.ch,email=jfeller@jofe.ch
 Specifies the name for the temple of the CA to issue the certificate(s). 
 The default value is "WebServer".
 
+.PARAMETER KeyLength
+Specifies the key length in Bit for the certificate. 
+Possible Values: 1024,2048,3072,4096,15360
+Default Value: 2048
+
 .PARAMETER CAName
 Specifies the name of the CA to send the request to in the format FQDN\CAName
 If the CAName is not specified, then the directory is queried for a list of enterprise CAs.
