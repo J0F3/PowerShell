@@ -40,13 +40,6 @@ Specifies the name of the CA to send the request to in the format FQDN\CAName
 If the CAName is not specified, then the directory is queried for a list of enterprise CAs.
 If more than one is returned the user is prompted to choose an enterprise CA from the local Active Directory.
 
-.PARAMETER Export
-Exports the certificate and private key to a pfx file instead of installing it in the local computer store.
-By default the certificate will be installed in the local computer store.
-
-.PARAMETER ExportPath
-Path to wich the pfx file should be saved when -Export is specified.
-
 .PARAMETER Country
 Specifies two letter for the optional country value in the subject of the certificate(s).
 e.g. CH
@@ -66,6 +59,16 @@ e.g. jofe.ch
 .PARAMETER Department
 Specifies the optional department value in the subject of the certificate(s).
 e.g. IT
+
+.PARAMETER Export
+Exports the certificate and private key to a pfx file instead of installing it in the local computer store.
+By default the certificate will be installed in the local computer store.
+
+.PARAMETER ExportPath
+Path to wich the pfx file should be saved when -Export is specified.
+
+.PARAMETER Password
+Specify the Password (as plain String or SecureString) used on the export.
 
 .INPUTS
 System.String
@@ -154,7 +157,7 @@ www.jfe.cloud
 
 #>
 
-[CmdletBinding()]
+[CmdletBinding(DefaultParametersetname="NoExport")]
 Param(
     [Parameter(Mandatory = $True, ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True)]
     [string]$CN,
@@ -168,11 +171,6 @@ Param(
     [Parameter(Mandatory = $False, ValueFromPipelineByPropertyName = $True)]
     [string]$CAName,
     [Parameter(Mandatory = $False, ValueFromPipelineByPropertyName = $True)]
-    [switch]$Export,
-    [Parameter(Mandatory = $False, ValueFromPipelineByPropertyName = $True)]
-    [ValidateScript( {Resolve-Path -Path $_})]
-    [string]$ExportPath,
-    [Parameter(Mandatory = $False, ValueFromPipelineByPropertyName = $True)]
     [string]$Country,
     [Parameter(Mandatory = $False, ValueFromPipelineByPropertyName = $True)]
     [string]$State,
@@ -181,7 +179,16 @@ Param(
     [Parameter(Mandatory = $False, ValueFromPipelineByPropertyName = $True)]
     [string]$Organisation,
     [Parameter(Mandatory = $False, ValueFromPipelineByPropertyName = $True)]
-    [string]$Department
+    [string]$Department,
+    [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $True, ParameterSetName='Export')]
+    [switch]$Export,
+    [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $True, ParameterSetName='Export')]
+    [ValidateScript( {Resolve-Path -Path $_})]
+    [string]$ExportPath,
+    [Parameter(Mandatory = $False, ValueFromPipelineByPropertyName = $True, ParameterSetName='Export')]
+    [ValidateScript( {$_.getType().name -eq "SecureString" -or $_.getType().name -eq "String"})]
+    $Password
+
 )
 BEGIN {
     #internal function to do some cleanup
@@ -228,6 +235,8 @@ ProviderName = "Microsoft Enhanced Cryptographic Provider v1.0"
 [RequestAttributes]
 CertificateTemplate = "$TemplateName"
 "@
+
+    Write-Debug "Inf-File: $file"
 
     #check if SAN certificate is requested
     if ($PSBoundParameters.ContainsKey('SAN')) {
@@ -332,7 +341,14 @@ CertificateTemplate = "$TemplateName"
             Write-Debug "Certificate found in computerstore: $cert"
 
             #create a pfx export as a byte array
-            $certbytes = $cert.export([System.Security.Cryptography.X509Certificates.X509ContentType]::pfx)
+            if($Password) {
+                Write-Debug "Exporting with password"
+                $certbytes = $cert.export([System.Security.Cryptography.X509Certificates.X509ContentType]::pfx, $Password)
+            }  else {
+                Write-Debug "Exporting without password"
+                $certbytes = $cert.export([System.Security.Cryptography.X509Certificates.X509ContentType]::pfx)
+            }
+            
 
             #write pfx file
             if ($PSBoundParameters.ContainsKey('ExportPath')) {
