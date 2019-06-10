@@ -251,7 +251,8 @@ CertificateTemplate = "$TemplateName"
 
         Write-Verbose "A value for the SAN is specified. Requesting a SAN certificate." 
         Write-Debug "Add Extension for SAN to the inf file..."
-        $file += @'
+        $file += 
+@'
 
 [Extensions]
 ; If your client operating system is Windows Server 2008, Windows Server 2008 R2, Windows Vista, or Windows 7
@@ -278,6 +279,9 @@ CertificateTemplate = "$TemplateName"
         $rsp = Join-Path -Path $env:TEMP -ChildPath "$CN.rsp"
 
         Remove-ReqTempfiles -tempfiles $inf, $req, $cer, $rsp
+
+        #write the file to debug logs (if debug enabled)
+        Write-Debug $file
         #create new request inf file
         Set-Content -Path $inf -Value $file 
 
