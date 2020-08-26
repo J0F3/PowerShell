@@ -244,11 +244,11 @@ CertificateTemplate = "$TemplateName"
         #if the array has ony one element then split it on the commas.
         if (($SAN).count -eq 1) {
             $SAN = @($SAN -split ',')
-
-            Write-Host "Requesting SAN certificate with subject $CN and SAN: $($SAN -join ',')" -ForegroundColor Green
-            Write-Debug "Parameter values: CN = $CN, TemplateName = $TemplateName, CAName = $CAName, SAN = $($SAN -join ' ')"
         }
 
+        Write-Host "Requesting SAN certificate with subject $CN and SAN: $($SAN -join ',')" -ForegroundColor Green
+        Write-Debug "Parameter values: CN = $CN, TemplateName = $TemplateName, CAName = $CAName, SAN = $($SAN -join ' ')"
+        
         Write-Verbose "A value for the SAN is specified. Requesting a SAN certificate." 
         Write-Debug "Add Extension for SAN to the inf file..."
         $file += 
