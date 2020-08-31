@@ -275,8 +275,9 @@ CertificateTemplate = "$TemplateName"
         #create temp files
         $inf = [System.IO.Path]::GetTempFileName()
         $req = [System.IO.Path]::GetTempFileName()
-        $cer = Join-Path -Path $env:TEMP -ChildPath "$CN.cer"
-        $rsp = Join-Path -Path $env:TEMP -ChildPath "$CN.rsp"
+        $filename = $CN -replace "^\*","wildcard"
+        $cer = Join-Path -Path $env:TEMP -ChildPath "$filename.cer"
+        $rsp = Join-Path -Path $env:TEMP -ChildPath "$filename.rsp"
 
         Remove-ReqTempfiles -tempfiles $inf, $req, $cer, $rsp
 
@@ -356,10 +357,10 @@ CertificateTemplate = "$TemplateName"
 
             #write pfx file
             if ($PSBoundParameters.ContainsKey('ExportPath')) {
-                $pfxPath = Join-Path -Path (Resolve-Path -Path $ExportPath) -ChildPath "$CN.pfx" 
+                $pfxPath = Join-Path -Path (Resolve-Path -Path $ExportPath) -ChildPath "$filename.pfx" 
             }
             else {
-                $pfxPath = ".\$CN.pfx"
+                $pfxPath = ".\$filename.pfx"
             }
             $certbytes | Set-Content -Encoding Byte -Path $pfxPath -ea Stop
             Write-Host "Certificate successfully exported to `"$pfxPath`"!" -ForegroundColor Green
