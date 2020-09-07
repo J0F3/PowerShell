@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS 
 Requests a certificate from a Windows CA
 
@@ -59,6 +59,10 @@ e.g. jofe.ch
 .PARAMETER Department
 Specifies the optional department value in the subject of the certificate(s).
 e.g. IT
+
+.PARAMETER AddCNinSAN
+Specifies the CN will be added to the SAN list if not already provided. This ensures compatibility with
+modern browsers.
 
 .PARAMETER Export
 Exports the certificate and private key to a pfx file instead of installing it in the local computer store.
@@ -180,6 +184,8 @@ Param(
     [string]$Organisation,
     [Parameter(Mandatory = $False, ValueFromPipelineByPropertyName = $True)]
     [string]$Department,
+    [Parameter(Mandatory = $False, ValueFromPipelineByPropertyName = $True)]
+    [switch]$AddCNinSAN,
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $True, ParameterSetName='Export')]
     [switch]$Export,
     [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $True, ParameterSetName='Export')]
@@ -236,8 +242,7 @@ ProviderName = "Microsoft Enhanced Cryptographic Provider v1.0"
 CertificateTemplate = "$TemplateName"
 "@
 
-    Write-Debug "Inf-File: $file"
-
+    
     #check if SAN certificate is requested
     if ($PSBoundParameters.ContainsKey('SAN')) {
         #each SAN must be a array element
@@ -245,10 +250,21 @@ CertificateTemplate = "$TemplateName"
         if (($SAN).count -eq 1) {
             $SAN = @($SAN -split ',')
         }
+    }
+
+    if ($AddCNinSAN) {
+        $SAN = "DNS=$CN" + $SAN #Add CN as first SAN entry
+    }
+
+    # Remove Potential duplicates (if CN was already provided in SAN list)
+    $SAN = $SAN | Select-Object -Unique
+
+
+    if ($SAN.Count -gt 0) {
 
         Write-Host "Requesting SAN certificate with subject $CN and SAN: $($SAN -join ',')" -ForegroundColor Green
         Write-Debug "Parameter values: CN = $CN, TemplateName = $TemplateName, CAName = $CAName, SAN = $($SAN -join ' ')"
-        
+
         Write-Verbose "A value for the SAN is specified. Requesting a SAN certificate." 
         Write-Debug "Add Extension for SAN to the inf file..."
         $file += 
@@ -270,6 +286,8 @@ CertificateTemplate = "$TemplateName"
         Write-Host "Requesting certificate with subject $CN" -ForegroundColor Green
         Write-Debug "Parameter values: CN = $CN, TemplateName = $TemplateName, CAName = $CAName"
     }
+
+    Write-Debug "Inf-File: $file"
 
     try	{
         #create temp files
