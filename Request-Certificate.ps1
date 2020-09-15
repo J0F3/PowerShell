@@ -1,4 +1,38 @@
-﻿<#
+﻿<#PSScriptInfo
+
+.VERSION 1.5.0
+
+.GUID eb791b3e-fbbe-4685-8c92-5eb0f05688b6
+
+.AUTHOR Jonas Feller c/o J0F3
+
+.COMPANYNAME jfe.cloud
+
+.COPYRIGHT (c) 2020 Jonas Feller. All rights reserved.
+
+.TAGS PSEdition_Desktop Certificate ActiveDirectory ActiveDirectoryCertificateServices Security
+
+.LICENSEURI
+
+.PROJECTURI https://github.com/J0F3/PowerShell
+
+.ICONURI
+
+.EXTERNALMODULEDEPENDENCIES
+
+.REQUIREDSCRIPTS
+
+.EXTERNALSCRIPTDEPENDENCIES
+
+.RELEASENOTES
+Kudos to jbpaux for contributing improvements and fixes on GitHub!
+- New switch parameter "AddCNinSAN" to automatically populate SAN with the CN. (PR #15)
+- Fixes an issue with naming ot the file when a wildcard (*) certificate is requested. (PR #14)
+- Improved outputs when requesting SAN certificate. (PR #13)
+- Fixes an issue where the request .inf file was not correctly formated when requesting a SAN certificate. (Kudos to smanross, PR #5)
+#>
+
+<#
 .SYNOPSIS 
 Requests a certificate from a Windows CA
 
@@ -69,7 +103,7 @@ Exports the certificate and private key to a pfx file instead of installing it i
 By default the certificate will be installed in the local computer store.
 
 .PARAMETER ExportPath
-Path to wich the pfx file should be saved when -Export is specified.
+Path to which the pfx file should be saved when -Export is specified.
 
 .PARAMETER Password
 Specify the Password (as plain String or SecureString) used on the export.
@@ -361,7 +395,7 @@ CertificateTemplate = "$TemplateName"
             Write-Debug "export parameter is set. => export certificate"
             Write-Verbose "exporting certificate and private key"
             $cert = Get-Childitem "cert:\LocalMachine\My" | where-object {$_.Thumbprint -eq (New-Object System.Security.Cryptography.X509Certificates.X509Certificate2((Get-Item $cer).FullName, "")).Thumbprint}
-            Write-Debug "Certificate found in computerstore: $cert"
+            Write-Debug "Certificate found in computer store: $cert"
 
             #create a pfx export as a byte array
             if($Password) {
