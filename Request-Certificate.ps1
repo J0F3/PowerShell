@@ -287,7 +287,7 @@ CertificateTemplate = "$TemplateName"
     }
 
     if ($AddCNinSAN) {
-        $SAN = "DNS=$CN" + $SAN #Add CN as first SAN entry
+        $SAN = $("DNS=$CN") + $SAN #Add CN as first SAN entry
     }
 
     # Remove Potential duplicates (if CN was already provided in SAN list)
