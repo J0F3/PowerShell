@@ -414,7 +414,7 @@ CertificateTemplate = "$TemplateName"
             else {
                 $pfxPath = ".\$filename.pfx"
             }
-            $certbytes | Set-Content -Encoding Byte -Path $pfxPath -ea Stop
+            $certbytes | Set-Content -AsByteStream -Path $pfxPath -ea Stop
             Write-Host "Certificate successfully exported to `"$pfxPath`"!" -ForegroundColor Green
 		    
             Write-Verbose "deleting exported certificate from computer store"
