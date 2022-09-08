@@ -223,7 +223,7 @@ Param(
     [Parameter(Mandatory = $False, ValueFromPipelineByPropertyName = $True)]
     [string]$Department,
     [Parameter(Mandatory = $False, ValueFromPipelineByPropertyName = $True)]
-    [string]$FriendlyName,
+    [string]$FriendlyName = "<None>" ,
     [Parameter(Mandatory = $False, ValueFromPipelineByPropertyName = $True)]
     [switch]$AddCNinSAN,
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $True, ParameterSetName='Export')]
