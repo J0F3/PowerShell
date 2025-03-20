@@ -1,6 +1,6 @@
 ﻿<#PSScriptInfo
 
-.VERSION 1.5.0
+.VERSION 1.6.0
 
 .GUID eb791b3e-fbbe-4685-8c92-5eb0f05688b6
 
@@ -25,11 +25,8 @@
 .EXTERNALSCRIPTDEPENDENCIES
 
 .RELEASENOTES
-Kudos to jbpaux for contributing improvements and fixes on GitHub!
-- New switch parameter "AddCNinSAN" to automatically populate SAN with the CN. (PR #15)
-- Fixes an issue with naming ot the file when a wildcard (*) certificate is requested. (PR #14)
-- Improved outputs when requesting SAN certificate. (PR #13)
-- Fixes an issue where the request .inf file was not correctly formated when requesting a SAN certificate. (Kudos to smanross, PR #5)
+* Fix SAN request by @bruckect in https://github.com/J0F3/PowerShell/pull/23
+* Add option for friendly name by @jmcook1 in https://github.com/J0F3/PowerShell/pull/26
 #>
 
 <#
@@ -177,6 +174,14 @@ test2.test.ch;DNS=test2san1.test.ch,DNS=test2san2.test.ch
 test3.test.ch;DNS=test3san1.test.ch,DNS=test3san2.test.ch
 
 .NOTES
+
+Version    : 1.5.0
+Changes    :
+    Kudos to jbpaux for contributing improvements and fixes on GitHub!
+    - New switch parameter "AddCNinSAN" to automatically populate SAN with the CN. (PR #15)
+    - Fixes an issue with naming ot the file when a wildcard (*) certificate is requested. (PR #14)
+    - Improved outputs when requesting SAN certificate. (PR #13)
+    - Fixes an issue where the request .inf file was not correctly formated when requesting a SAN certificate. (Kudos to smanross, PR #5)
 
 Version    : 1.4, 01/31/2019
 Changes    :
